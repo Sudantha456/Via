@@ -621,6 +621,23 @@
         }
     }
 
+    /**
+     * YouTube and YouTube Music show a "tap to resume" / buffering overlay when they
+     * think playback was interrupted. Purely cosmetic cleanup, best effort.
+     */
+    function hideBlockingOverlays() {
+        if (!CONFIG.bg) return;
+        var selectors = ['.ytp-pause-overlay', 'ytm-notification-action-renderer', '.ytp-autonav-endscreen-upnext-container'];
+        for (var i = 0; i < selectors.length; i++) {
+            try {
+                var nodes = D.querySelectorAll(selectors[i]);
+                for (var j = 0; j < nodes.length; j++) {
+                    if (nodes[j].style) nodes[j].style.display = 'none';
+                }
+            } catch (e) { }
+        }
+    }
+
     function guard(ev) {
         if (CONFIG.bg) {
             try { ev.stopImmediatePropagation(); } catch (e) { }
@@ -813,7 +830,15 @@
 
     function configure(newConfig) {
         if (!newConfig) return;
+        var bgChanged = !CONFIG || CONFIG.bg !== newConfig.bg;
         CONFIG = newConfig;
+        if (bgChanged) {
+            // Late players (YouTube Music, SPAs) may have replaced the media element:
+            // re-attach the listeners and the title watcher.
+            attachMediaListeners();
+            observeTitle();
+            send(true);
+        }
         if (!CONFIG.bg) {
             // Leaving background mode: if we are hidden the page may legitimately pause.
             wantPlaying = !!(activeMedia && !activeMedia.paused);
@@ -835,6 +860,7 @@
             attachMediaListeners();
             send(false);
         }, 1000);
+        W.setInterval(hideBlockingOverlays, 5000);
     } catch (e) { }
 
     try {
@@ -842,13 +868,18 @@
         D.addEventListener('loadedmetadata', function () { send(true); }, true);
     } catch (e) { }
 
-    try {
-        if (D.title) {
-            var observer = new W.MutationObserver(function () { send(false); });
+    var titleObserver = null;
+    function observeTitle() {
+        try {
+            if (!W.MutationObserver) return;
+            if (titleObserver) return;
             var titleEl = D.querySelector('title');
-            if (titleEl) observer.observe(titleEl, { childList: true });
-        }
-    } catch (e) { }
+            if (!titleEl) return;
+            titleObserver = new W.MutationObserver(function () { send(false); });
+            titleObserver.observe(titleEl, { childList: true });
+        } catch (e) { }
+    }
+    observeTitle();
 
     try {
         W.addEventListener('popstate', function () { W.setTimeout(function () { send(true); }, 700); });

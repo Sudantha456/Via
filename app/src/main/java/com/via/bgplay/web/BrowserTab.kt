@@ -41,6 +41,9 @@ class BrowserTab(
     var isAudioOnly: Boolean = false
         private set
 
+    /** Progress of the current load, 0..100; used to reload after the engine boots. */
+    var progress: Int = 0
+
     init {
         webView.settings.apply {
             javaScriptEnabled = true
@@ -82,7 +85,13 @@ class BrowserTab(
         if (webView.parent == null) {
             parent.addView(webView)
         }
-        webView.visibility = android.view.View.VISIBLE
+        if (webView.visibility != android.view.View.VISIBLE) {
+            webView.visibility = android.view.View.VISIBLE
+        }
+    }
+
+    fun hide() {
+        webView.visibility = android.view.View.INVISIBLE
     }
 
     fun detachFromView() {

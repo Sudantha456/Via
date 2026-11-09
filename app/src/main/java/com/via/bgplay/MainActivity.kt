@@ -80,6 +80,7 @@ class MainActivity : AppCompatActivity() {
     private var selectedTabId: String? = null
     private var homeView: View? = null
 
+    private val engineReloadDone = HashSet<String>()
     private var playerSheetOpen = false
     private var seekBarDragging = false
 
@@ -443,6 +444,7 @@ class MainActivity : AppCompatActivity() {
                 if (url != null && url != HOME_URL && !url.startsWith("about:")) {
                     RecentSites.remember(this@MainActivity, tab.pageUrl, title ?: tab.pageUrl)
                 }
+                tab.webView.postDelayed({ scheduleEngineReload(tab) }, 3000)
             }
 
             override fun onUrlChanged(url: String?) {
@@ -475,7 +477,10 @@ class MainActivity : AppCompatActivity() {
             }
         })
         tab.webView.webChromeClient = ViaWebChromeClient(object : ViaWebChromeClient.Callbacks {
-            override fun onProgress(progress: Int) = showWebChromeProgress(progress)
+            override fun onProgress(progress: Int) {
+                tab.progress = progress
+                showWebChromeProgress(progress)
+            }
             override fun onTitle(title: String?) {
                 tab.updateTitle(title)
                 updateTabCount()
@@ -493,12 +498,30 @@ class MainActivity : AppCompatActivity() {
         tab.webView.evaluateJavascript(script, null)
     }
 
+    /**
+     * Some sites (YouTube Music first of all) build their real player after the `load`
+     * event, replacing the media element the engine had hooked. A silent one-shot
+     * reload makes the engine attach to the live player. It runs at most once per tab,
+     * never while that tab is already playing, and only once the page is mostly loaded.
+     */
+    private fun scheduleEngineReload(tab: BrowserTab) {
+        if (engineReloadDone.contains(tab.id)) return
+        if (tab.progress < 99) return
+        val state = PlaybackCenter.current
+        if (state?.tabId == tab.id && state.playing) return
+        engineReloadDone.add(tab.id)
+        tab.reload()
+    }
+
     private fun selectTab(tabId: String) {
         val tab = tabs[tabId] ?: return
         selectedTabId = tabId
         for ((id, other) in tabs) {
             other.setSelected(id == tabId)
-            other.webView.isVisible = id == tabId
+            // INVISIBLE (not GONE) and never detached: the hidden tab keeps its media
+            // pipeline and its layout size, which is what makes background play work
+            // across tabs.
+            if (id == tabId) other.attach() else other.hide()
         }
         tab.attach()
         addressBar.text = if (tab.pageUrl == HOME_URL) "" else tab.pageUrl
