@@ -85,32 +85,59 @@ jobs:
             gradle --no-daemon --stacktrace assembleRelease 2>&1 | tee build.log
           fi
 
-      # Diagnostics: the tail of the build log is posted as a commit comment so build
-      # failures can be inspected from any API client (the raw Actions log host is not
-      # always reachable).
-      - name: Report build failure
-        if: failure()
+      - name: Inspect APK
+        if: success()
+        run: |
+          SDK="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+          AAPT="$(find "$SDK/build-tools" -name aapt2 -type f | sort | tail -1)"
+          APK="$(find app/build/outputs/apk -name '*.apk' | head -1)"
+          echo "APK: $APK"
+          {
+            echo "### APK built successfully"
+            echo ""
+            echo '```'
+            ls -lh "$APK"
+            "$AAPT" dump badging "$APK" | grep -E "^(package|launchable-activity|application-label|uses-permission|sdkVersion|targetSdkVersion)" || true
+            echo ""
+            echo "assets:"
+            unzip -l "$APK" | grep -E "bgp_engine.js|classes.dex|bgp_activity|bgp_notif_action" | awk '{print $4}'
+            echo '```'
+          } > apk-summary.md
+          cat apk-summary.md
+
+      # Diagnostics: build failures and the APK summary are posted as a commit comment
+      # so the result can be inspected through the API as well as in the UI.
+      - name: Report result
+        if: always()
         continue-on-error: true
         run: |
           python3 - <<'EOF'
-          import json, os, urllib.request
+          import json, os, re, urllib.request
           token = os.environ.get("GITHUB_TOKEN", "")
           repo = os.environ.get("GITHUB_REPOSITORY", "")
           sha = os.environ.get("GITHUB_SHA", "")
-          import re
-          try:
-              lines = open("build.log", "r", errors="replace").read().splitlines()
-          except OSError:
-              lines = ["build.log missing (failure happened before the build step)"]
-          keep = []
-          interesting = re.compile(r"(error:|e: |warning: |FAILURE|What went wrong|Caused by|> Task .*FAILED|Execution failed|Unresolved|not found|Could not)", re.I)
-          for line in lines:
-              if interesting.search(line):
-                  keep.append(line.strip())
-          if not keep:
-              keep = lines[-60:]
-          body = "\n".join(keep[-250:])[-11000:]
-          data = json.dumps({"body": "### Build log tail\n```\n" + body + "\n```"}).encode()
+          status = os.environ.get("JOB_STATUS", "")
+
+          if status == "success":
+              try:
+                  body = open("apk-summary.md", errors="replace").read()
+              except OSError:
+                  body = "### APK built successfully (no summary available)"
+          else:
+              try:
+                  lines = open("build.log", errors="replace").read().splitlines()
+              except OSError:
+                  lines = ["build.log missing (failure happened before the build step)"]
+              keep = []
+              interesting = re.compile(r"(error:|e: |FAILURE|What went wrong|Caused by|> Task .*FAILED|Execution failed|Unresolved|not found|Could not)", re.I)
+              for line in lines:
+                  if interesting.search(line):
+                      keep.append(line.strip())
+              if not keep:
+                  keep = lines[-60:]
+              body = "### Build failed — log tail\n```\n" + "\n".join(keep[-250:])[-11000:] + "\n```"
+
+          data = json.dumps({"body": body}).encode()
           req = urllib.request.Request(
               f"https://api.github.com/repos/{repo}/commits/{sha}/comments",
               data=data,
@@ -123,12 +150,15 @@ jobs:
           )
           try:
               urllib.request.urlopen(req).read()
-              print("failure log posted")
+              print("result posted")
           except Exception as exc:
-              print("could not post log:", exc)
+              print("could not post result:", exc)
           EOF
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JOB_STATUS: ${{ job.status }}
+
+
 
       - name: Collect artifacts
         run: |
