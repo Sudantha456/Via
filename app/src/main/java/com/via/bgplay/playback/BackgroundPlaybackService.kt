@@ -104,6 +104,7 @@ class BackgroundPlaybackService : Service() {
     private var currentState: MediaState = MediaState.idle()
     private var currentArtwork: Bitmap? = null
     private var lastNotificationKey: String? = null
+    private var lastMetadataKey: String? = null
 
     private val noisyReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -345,10 +346,24 @@ class BackgroundPlaybackService : Service() {
         if (s.isActive != enabled) s.isActive = enabled
         if (!enabled) return
 
-        val metadata = MediaMetadataCompat.Builder()
+        // Metadata only changes when the track changes; the playback state (position,
+        // speed) is refreshed on every update so the lock screen scrubber stays live.
+        val metadataKey = (info.title + '|' + info.artist + '|' + info.durationMs + '|' +
+            (currentArtwork?.hashCode() ?: 0))
+        if (metadataKey != lastMetadataKey) {
+            lastMetadataKey = metadataKey
+            s.setMetadata(buildMetadata(info))
+        }
+
+        updatePlaybackState(state, info)
+    }
+
+    private fun buildMetadata(info: MediaInfo): MediaMetadataCompat {
+        return MediaMetadataCompat.Builder()
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, info.notifTitle)
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, info.artist)
             .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, info.album)
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, info.notifTitle)
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, info.notifSubtitle)
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION, info.siteName)
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, info.durationMs)
@@ -360,7 +375,10 @@ class BackgroundPlaybackService : Service() {
                 }
             }
             .build()
+    }
 
+    private fun updatePlaybackState(state: MediaState, info: MediaInfo) {
+        val s = session ?: return
         val actions = PlaybackStateCompat.ACTION_PLAY or
             PlaybackStateCompat.ACTION_PAUSE or
             PlaybackStateCompat.ACTION_PLAY_PAUSE or
@@ -379,8 +397,6 @@ class BackgroundPlaybackService : Service() {
                 SystemClock.elapsedRealtime()
             )
             .build()
-
-        s.setMetadata(metadata)
         s.setPlaybackState(playbackState)
     }
 
@@ -524,19 +540,24 @@ class BackgroundPlaybackService : Service() {
             notifySafely(minimal, "minimal", state)
             return
         }
+        val info = state.info
+        // The state is published roughly once a second (position updates). Rebuilding
+        // the notification that often would flicker and waste battery, so it is only
+        // refreshed when something visible changed or every five seconds for the bar.
         val key = buildString {
-            append(state.info?.title).append('|')
-            append(state.info?.artist).append('|')
-            append(state.info?.artworkUrl).append('|')
+            append(info?.title).append('|')
+            append(info?.artist).append('|')
             append(state.playing).append('|')
             append(currentArtwork?.hashCode()).append('|')
-            append(state.info?.siteName)
+            append(info?.siteName).append('|')
+            append((info?.positionMs ?: 0L) / 5000)
         }
+        if (key == lastNotificationKey && foregroundStarted) return
+        lastNotificationKey = key
         notifySafely(buildNotification(state), key, state)
     }
 
     private fun notifySafely(notification: Notification, key: String, state: MediaState) {
-        lastNotificationKey = key
         try {
             NotificationManagerCompat.from(this).notify(NOTIFICATION_ID, notification)
         } catch (e: SecurityException) {
