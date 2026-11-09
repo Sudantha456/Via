@@ -293,24 +293,25 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        val flingDetector = android.view.GestureDetector(
-            this,
-            object : android.view.GestureDetector.SimpleOnGestureListener() {
-                override fun onFling(
-                    e1: MotionEvent,
-                    e2: MotionEvent,
-                    velocityX: Float,
-                    velocityY: Float
-                ): Boolean {
-                    if (velocityY > 400) {
-                        closePlayer()
-                        return true
-                    }
-                    return false
+        // Swipe the player sheet down to collapse it (simple, dependency free).
+        var dragStartY = 0f
+        playerSheet.setOnTouchListener { view, event ->
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    dragStartY = event.rawY
+                    false
                 }
+                MotionEvent.ACTION_UP -> {
+                    if (event.rawY - dragStartY > 140) {
+                        closePlayer()
+                        true
+                    } else {
+                        false
+                    }
+                }
+                else -> false
             }
-        )
-        playerSheet.setOnTouchListener { _, event -> flingDetector.onTouchEvent(event) }
+        }
     }
 
     // ------------------------------------------------------------------ home
