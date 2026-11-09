@@ -30,7 +30,7 @@
 
         <TextView
             android:id="@+id/shortcut_title"
-            style="@style/Bgp.Text.Title"
+            style="@style/BgpTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
@@ -38,7 +38,7 @@
 
         <TextView
             android:id="@+id/shortcut_subtitle"
-            style="@style/Bgp.Text.Meta"
+            style="@style/BgpMeta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="11sp"
@@ -57,7 +57,7 @@
 
     <ImageButton
         android:id="@+id/shortcut_more"
-        style="@style/Bgp.IconButton"
+        style="@style/BgpIconButton"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:contentDescription="@string/bgp_settings"

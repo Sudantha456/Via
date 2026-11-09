@@ -17,7 +17,7 @@
 
         <ImageButton
             android:id="@+id/settings_back"
-            style="@style/Bgp.IconButton"
+            style="@style/BgpIconButton"
             android:layout_width="44dp"
             android:layout_height="44dp"
             android:contentDescription="@string/bgp_close"
@@ -75,13 +75,13 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/Bgp.Text.Title"
+                        style="@style/BgpTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/bgp_background_play" />
 
                     <TextView
-                        style="@style/Bgp.Text.Meta"
+                        style="@style/BgpMeta"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
@@ -114,13 +114,13 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/Bgp.Text.Title"
+                        style="@style/BgpTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/bgp_media_notification" />
 
                     <TextView
-                        style="@style/Bgp.Text.Meta"
+                        style="@style/BgpMeta"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
@@ -153,13 +153,13 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/Bgp.Text.Title"
+                        style="@style/BgpTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/bgp_media_session" />
 
                     <TextView
-                        style="@style/Bgp.Text.Meta"
+                        style="@style/BgpMeta"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
@@ -192,13 +192,13 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/Bgp.Text.Title"
+                        style="@style/BgpTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/bgp_mute_hidden" />
 
                     <TextView
-                        style="@style/Bgp.Text.Meta"
+                        style="@style/BgpMeta"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
@@ -231,13 +231,13 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/Bgp.Text.Title"
+                        style="@style/BgpTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/bgp_wake_lock" />
 
                     <TextView
-                        style="@style/Bgp.Text.Meta"
+                        style="@style/BgpMeta"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
@@ -283,14 +283,14 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/Bgp.Text.Title"
+                        style="@style/BgpTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/bgp_notification_permission" />
 
                     <TextView
                         android:id="@+id/text_notification_permission"
-                        style="@style/Bgp.Text.Meta"
+                        style="@style/BgpMeta"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
@@ -299,7 +299,7 @@
 
                 <TextView
                     android:id="@+id/notification_permission_state"
-                    style="@style/Bgp.Text.Meta"
+                    style="@style/BgpMeta"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="8dp"
@@ -326,14 +326,14 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/Bgp.Text.Title"
+                        style="@style/BgpTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/bgp_battery_optimization" />
 
                     <TextView
                         android:id="@+id/text_battery"
-                        style="@style/Bgp.Text.Meta"
+                        style="@style/BgpMeta"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
@@ -343,7 +343,7 @@
 
                 <TextView
                     android:id="@+id/battery_state"
-                    style="@style/Bgp.Text.Meta"
+                    style="@style/BgpMeta"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="8dp"
@@ -362,7 +362,7 @@
 
             <TextView
                 android:id="@+id/about_version"
-                style="@style/Bgp.Text.Meta"
+                style="@style/BgpMeta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"

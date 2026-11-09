@@ -18,7 +18,7 @@
         <item name="android:windowBackground">@color/bgp_surface</item>
     </style>
 
-    <style name="Bgp.Text.Title">
+    <style name="BgpTitle">
         <item name="android:textSize">@dimen/bgp_text_title</item>
         <item name="android:textColor">@color/bgp_text_primary</item>
         <item name="android:textStyle">bold</item>
@@ -26,22 +26,22 @@
         <item name="android:ellipsize">end</item>
     </style>
 
-    <style name="Bgp.Text.Meta">
+    <style name="BgpMeta">
         <item name="android:textSize">@dimen/bgp_text_meta</item>
         <item name="android:textColor">@color/bgp_text_secondary</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
     </style>
 
-    <style name="Bgp.IconButton">
+    <style name="BgpIconButton">
         <item name="android:layout_width">@dimen/bgp_touch</item>
         <item name="android:layout_height">@dimen/bgp_touch</item>
         <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
         <item name="android:padding">10dp</item>
-        <item name="tint">@color/bgp_text_primary</item>
+        <item name="android:tint">@color/bgp_text_primary</item>
     </style>
 
-    <style name="Bgp.Switch">
+    <style name="BgpSwitch">
         <item name="android:thumbTint">@color/bgp_accent</item>
         <item name="android:trackTint">@color/bgp_accent_dim</item>
     </style>

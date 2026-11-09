@@ -50,7 +50,7 @@
 
             <ImageButton
                 android:id="@+id/btn_home"
-                style="@style/Bgp.IconButton"
+                style="@style/BgpIconButton"
                 android:layout_width="38dp"
                 android:layout_height="38dp"
                 android:contentDescription="@string/bgp_home"
@@ -75,7 +75,7 @@
 
             <ImageButton
                 android:id="@+id/btn_background_play"
-                style="@style/Bgp.IconButton"
+                style="@style/BgpIconButton"
                 android:layout_width="38dp"
                 android:layout_height="38dp"
                 android:contentDescription="@string/bgp_background_play"
@@ -83,7 +83,7 @@
 
             <ImageButton
                 android:id="@+id/btn_menu"
-                style="@style/Bgp.IconButton"
+                style="@style/BgpIconButton"
                 android:layout_width="38dp"
                 android:layout_height="38dp"
                 android:contentDescription="@string/bgp_settings"
@@ -115,7 +115,7 @@
 
         <ImageButton
             android:id="@+id/btn_back"
-            style="@style/Bgp.IconButton"
+            style="@style/BgpIconButton"
             android:layout_width="0dp"
             android:layout_height="44dp"
             android:layout_weight="1"
@@ -124,7 +124,7 @@
 
         <ImageButton
             android:id="@+id/btn_forward"
-            style="@style/Bgp.IconButton"
+            style="@style/BgpIconButton"
             android:layout_width="0dp"
             android:layout_height="44dp"
             android:layout_weight="1"
@@ -140,7 +140,7 @@
 
             <ImageButton
                 android:id="@+id/btn_tabs"
-                style="@style/Bgp.IconButton"
+                style="@style/BgpIconButton"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:contentDescription="@string/bgp_tabs"
@@ -164,7 +164,7 @@
 
         <ImageButton
             android:id="@+id/btn_audio"
-            style="@style/Bgp.IconButton"
+            style="@style/BgpIconButton"
             android:layout_width="0dp"
             android:layout_height="44dp"
             android:layout_weight="1"
@@ -173,7 +173,7 @@
 
         <ImageButton
             android:id="@+id/btn_desktop"
-            style="@style/Bgp.IconButton"
+            style="@style/BgpIconButton"
             android:layout_width="0dp"
             android:layout_height="44dp"
             android:layout_weight="1"
@@ -231,7 +231,7 @@
 
             <TextView
                 android:id="@+id/mini_title"
-                style="@style/Bgp.Text.Title"
+                style="@style/BgpTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="13sp"
@@ -239,7 +239,7 @@
 
             <TextView
                 android:id="@+id/mini_subtitle"
-                style="@style/Bgp.Text.Meta"
+                style="@style/BgpMeta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="11sp"
@@ -248,7 +248,7 @@
 
         <ImageButton
             android:id="@+id/mini_prev"
-            style="@style/Bgp.IconButton"
+            style="@style/BgpIconButton"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:contentDescription="@string/bgp_previous"
@@ -256,7 +256,7 @@
 
         <ImageButton
             android:id="@+id/mini_play"
-            style="@style/Bgp.IconButton"
+            style="@style/BgpIconButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:contentDescription="@string/bgp_play"
@@ -264,7 +264,7 @@
 
         <ImageButton
             android:id="@+id/mini_next"
-            style="@style/Bgp.IconButton"
+            style="@style/BgpIconButton"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:contentDescription="@string/bgp_next"
@@ -272,7 +272,7 @@
 
         <ImageButton
             android:id="@+id/mini_close"
-            style="@style/Bgp.IconButton"
+            style="@style/BgpIconButton"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:contentDescription="@string/bgp_stop_background_play"
@@ -298,7 +298,7 @@
 
         <ImageButton
             android:id="@+id/player_collapse"
-            style="@style/Bgp.IconButton"
+            style="@style/BgpIconButton"
             android:layout_width="44dp"
             android:layout_height="36dp"
             android:layout_gravity="center_horizontal"
@@ -317,7 +317,7 @@
 
         <TextView
             android:id="@+id/player_title"
-            style="@style/Bgp.Text.Title"
+            style="@style/BgpTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
@@ -326,7 +326,7 @@
 
         <TextView
             android:id="@+id/player_subtitle"
-            style="@style/Bgp.Text.Meta"
+            style="@style/BgpMeta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -335,7 +335,7 @@
 
         <TextView
             android:id="@+id/player_site"
-            style="@style/Bgp.Text.Meta"
+            style="@style/BgpMeta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
@@ -359,7 +359,7 @@
 
             <TextView
                 android:id="@+id/player_position"
-                style="@style/Bgp.Text.Meta"
+                style="@style/BgpMeta"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -367,7 +367,7 @@
 
             <TextView
                 android:id="@+id/player_duration"
-                style="@style/Bgp.Text.Meta"
+                style="@style/BgpMeta"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="end"
@@ -384,7 +384,7 @@
 
             <ImageButton
                 android:id="@+id/player_prev"
-                style="@style/Bgp.IconButton"
+                style="@style/BgpIconButton"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:contentDescription="@string/bgp_previous"
@@ -403,7 +403,7 @@
 
             <ImageButton
                 android:id="@+id/player_next"
-                style="@style/Bgp.IconButton"
+                style="@style/BgpIconButton"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:contentDescription="@string/bgp_next"
@@ -418,7 +418,7 @@
 
             <TextView
                 android:id="@+id/player_state"
-                style="@style/Bgp.Text.Meta"
+                style="@style/BgpMeta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/bgp_text_tertiary"

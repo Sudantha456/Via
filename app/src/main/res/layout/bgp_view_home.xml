@@ -59,14 +59,14 @@
 
                 <TextView
                     android:id="@+id/home_bg_title"
-                    style="@style/Bgp.Text.Title"
+                    style="@style/BgpTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     tools:text="Background play is on" />
 
                 <TextView
                     android:id="@+id/home_bg_summary"
-                    style="@style/Bgp.Text.Meta"
+                    style="@style/BgpMeta"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"

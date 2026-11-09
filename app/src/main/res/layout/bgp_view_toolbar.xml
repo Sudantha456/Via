@@ -22,7 +22,7 @@
 
     <ImageButton
         android:id="@+id/toolbar_settings"
-        style="@style/Bgp.IconButton"
+        style="@style/BgpIconButton"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:contentDescription="@string/bgp_settings"
