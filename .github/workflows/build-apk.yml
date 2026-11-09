@@ -76,13 +76,51 @@ jobs:
       - name: Build
         run: |
           VARIANT="${{ github.event.inputs.build_type }}"
+          set -o pipefail
           if [ "$VARIANT" = "debug" ]; then
-            gradle --no-daemon assembleDebug
+            gradle --no-daemon --stacktrace assembleDebug 2>&1 | tee build.log
           elif [ "$VARIANT" = "both" ]; then
-            gradle --no-daemon assembleRelease assembleDebug
+            gradle --no-daemon --stacktrace assembleRelease assembleDebug 2>&1 | tee build.log
           else
-            gradle --no-daemon assembleRelease
+            gradle --no-daemon --stacktrace assembleRelease 2>&1 | tee build.log
           fi
+
+      # Diagnostics: the tail of the build log is posted as a commit comment so build
+      # failures can be inspected from any API client (the raw Actions log host is not
+      # always reachable).
+      - name: Report build failure
+        if: failure()
+        continue-on-error: true
+        run: |
+          python3 - <<'EOF'
+          import json, os, urllib.request
+          token = os.environ.get("GITHUB_TOKEN", "")
+          repo = os.environ.get("GITHUB_REPOSITORY", "")
+          sha = os.environ.get("GITHUB_SHA", "")
+          try:
+              log = open("build.log", "r", errors="replace").read()
+          except OSError:
+              log = "build.log missing (failure happened before the build step)"
+          body = log[-12000:]
+          data = json.dumps({"body": "### Build log tail\n```\n" + body + "\n```"}).encode()
+          req = urllib.request.Request(
+              f"https://api.github.com/repos/{repo}/commits/{sha}/comments",
+              data=data,
+              headers={
+                  "Authorization": f"Bearer {token}",
+                  "Accept": "application/vnd.github+json",
+                  "Content-Type": "application/json",
+              },
+              method="POST",
+          )
+          try:
+              urllib.request.urlopen(req).read()
+              print("failure log posted")
+          except Exception as exc:
+              print("could not post log:", exc)
+          EOF
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Collect artifacts
         run: |
