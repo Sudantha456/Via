@@ -1,0 +1,196 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ master, main, 'arena/**' ]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Variant to build'
+        required: true
+        default: 'release'
+        type: choice
+        options: [release, debug, both]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Assemble APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      # The GitHub-hosted Ubuntu images already ship the Android SDK; only the
+      # platform/build-tools we compile against need to be present.
+      - name: Ensure Android SDK packages
+        run: |
+          SDK="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-/usr/local/lib/android/sdk}}"
+          echo "ANDROID_SDK_ROOT=$SDK" >> "$GITHUB_ENV"
+          echo "ANDROID_HOME=$SDK" >> "$GITHUB_ENV"
+          export ANDROID_SDK_ROOT="$SDK" ANDROID_HOME="$SDK"
+          SDKMGR="$(find "$SDK" -name sdkmanager -type f 2>/dev/null | head -1)"
+          if [ -z "$SDKMGR" ]; then
+            echo "sdkmanager not found, installing command line tools"
+            mkdir -p "$SDK/cmdline-tools"
+            curl -sSLo /tmp/cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+            unzip -q /tmp/cmdline-tools.zip -d "$SDK/cmdline-tools"
+            mv "$SDK/cmdline-tools/cmdline-tools" "$SDK/cmdline-tools/latest"
+            SDKMGR="$SDK/cmdline-tools/latest/bin/sdkmanager"
+          fi
+          echo "Using $SDKMGR"
+          yes | "$SDKMGR" --licenses > /dev/null || true
+          "$SDKMGR" "platforms;android-34" "build-tools;34.0.0" "platform-tools" > /dev/null
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+
+      - name: Create debug keystore
+        run: |
+          mkdir -p "$HOME/.android"
+          if [ ! -f "$HOME/.android/debug.keystore" ]; then
+            keytool -genkeypair -v \
+              -keystore "$HOME/.android/debug.keystore" \
+              -storepass android -keypass android \
+              -alias androiddebugkey \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -dname "CN=Android Debug,O=Android,C=US"
+          fi
+
+      - name: Build
+        run: |
+          VARIANT="${{ github.event.inputs.build_type }}"
+          set -o pipefail
+          if [ "$VARIANT" = "debug" ]; then
+            gradle --no-daemon --stacktrace assembleDebug 2>&1 | tee build.log
+          elif [ "$VARIANT" = "both" ]; then
+            gradle --no-daemon --stacktrace assembleRelease assembleDebug 2>&1 | tee build.log
+          else
+            gradle --no-daemon --stacktrace assembleRelease 2>&1 | tee build.log
+          fi
+
+      - name: Inspect APK
+        if: success()
+        run: |
+          SDK="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+          AAPT="$(find "$SDK/build-tools" -name aapt2 -type f | sort | tail -1)"
+          APK="$(find app/build/outputs/apk -name '*.apk' | head -1)"
+          echo "APK: $APK"
+          {
+            echo "### APK built successfully"
+            echo ""
+            echo '```'
+            ls -lh "$APK"
+            "$AAPT" dump badging "$APK" | grep -E "^(package|launchable-activity|application-label|uses-permission|sdkVersion|targetSdkVersion)" || true
+            echo ""
+            echo "assets:"
+            unzip -l "$APK" | grep -E "bgp_engine.js|classes.dex|bgp_activity|bgp_notif_action" | awk '{print $4}'
+            echo '```'
+          } > apk-summary.md
+          cat apk-summary.md
+
+      # Diagnostics: build failures and the APK summary are posted as a commit comment
+      # so the result can be inspected through the API as well as in the UI.
+      - name: Report result
+        if: always()
+        continue-on-error: true
+        run: |
+          python3 - <<'EOF'
+          import json, os, re, urllib.request
+          token = os.environ.get("GITHUB_TOKEN", "")
+          repo = os.environ.get("GITHUB_REPOSITORY", "")
+          sha = os.environ.get("GITHUB_SHA", "")
+          status = os.environ.get("JOB_STATUS", "")
+
+          if status == "success":
+              try:
+                  body = open("apk-summary.md", errors="replace").read()
+              except OSError:
+                  body = "### APK built successfully (no summary available)"
+          else:
+              try:
+                  lines = open("build.log", errors="replace").read().splitlines()
+              except OSError:
+                  lines = ["build.log missing (failure happened before the build step)"]
+              keep = []
+              interesting = re.compile(r"(error:|e: |FAILURE|What went wrong|Caused by|> Task .*FAILED|Execution failed|Unresolved|not found|Could not)", re.I)
+              for line in lines:
+                  if interesting.search(line):
+                      keep.append(line.strip())
+              if not keep:
+                  keep = lines[-60:]
+              body = "### Build failed — log tail\n```\n" + "\n".join(keep[-250:])[-11000:] + "\n```"
+
+          data = json.dumps({"body": body}).encode()
+          req = urllib.request.Request(
+              f"https://api.github.com/repos/{repo}/commits/{sha}/comments",
+              data=data,
+              headers={
+                  "Authorization": f"Bearer {token}",
+                  "Accept": "application/vnd.github+json",
+                  "Content-Type": "application/json",
+              },
+              method="POST",
+          )
+          try:
+              urllib.request.urlopen(req).read()
+              print("result posted")
+          except Exception as exc:
+              print("could not post result:", exc)
+          EOF
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JOB_STATUS: ${{ job.status }}
+
+
+
+      - name: Collect artifacts
+        run: |
+          mkdir -p out
+          find app/build/outputs/apk -name '*.apk' -exec cp {} out/ \;
+          ls -lh out
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: via-background-play-apk
+          path: out/*.apk
+          if-no-files-found: error
+
+      - name: Publish APK to a release
+        if: github.event_name != 'pull_request'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: Via Background Play build ${{ github.run_number }}
+          body: |
+            Automatic APK build from `${{ github.sha }}` (branch `${{ github.ref_name }}`).
+
+            ### What's inside
+            - Background playback for any website, YouTube and YouTube Music included
+            - Rich media notification: thumbnail, title, artist/owner, album, site name,
+              previous / play-pause / next and a seek bar
+            - Lock screen, headset, Bluetooth and Android Auto controls
+            - In-app mini player and full player sheet
+
+            Download the `.apk` below and install it on your phone (allow "install from
+            unknown sources"). The build is signed with the standard debug key, so it
+            installs directly without extra secrets.
+          files: out/*.apk
+          fail_on_unmatched_files: false

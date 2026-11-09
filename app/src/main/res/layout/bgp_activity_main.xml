@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bgp_surface">
+
+    <!-- ============ Generic content container (home page lives here) ============ -->
+    <LinearLayout
+        android:id="@+id/content_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="gone">
+
+        <include layout="@layout/bgp_view_toolbar" />
+
+        <FrameLayout
+            android:id="@+id/content_slot"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/web_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- ============ Address bar / browser chrome ============ -->
+    <LinearLayout
+        android:id="@+id/browser_chrome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/bgp_surface"
+        android:orientation="vertical"
+        android:paddingStart="8dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="6dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btn_home"
+                style="@style/BgpIconButton"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:contentDescription="@string/bgp_home"
+                android:src="@drawable/ic_home" />
+
+            <TextView
+                android:id="@+id/address_bar"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/bgp_bg_address"
+                android:gravity="center_vertical"
+                android:hint="@string/bgp_search_hint"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:singleLine="true"
+                android:textColor="@color/bgp_text_primary"
+                android:textColorHint="@color/bgp_text_tertiary"
+                android:textSize="14sp" />
+
+            <ImageButton
+                android:id="@+id/btn_background_play"
+                style="@style/BgpIconButton"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:contentDescription="@string/bgp_background_play"
+                android:src="@drawable/ic_headphones" />
+
+            <ImageButton
+                android:id="@+id/btn_menu"
+                style="@style/BgpIconButton"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:contentDescription="@string/bgp_settings"
+                android:src="@drawable/ic_more_vert" />
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/page_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:indeterminate="false"
+            android:max="100"
+            android:progressDrawable="@drawable/bgp_bg_progress_horizontal"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+    <!-- ============ Bottom bar ============ -->
+    <LinearLayout
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/bgp_surface"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp">
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            style="@style/BgpIconButton"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/bgp_back"
+            android:src="@drawable/ic_arrow_back" />
+
+        <ImageButton
+            android:id="@+id/btn_forward"
+            style="@style/BgpIconButton"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/bgp_forward"
+            android:src="@drawable/ic_arrow_forward" />
+
+        <FrameLayout
+            android:id="@+id/btn_tabs_holder"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless">
+
+            <ImageButton
+                android:id="@+id/btn_tabs"
+                style="@style/BgpIconButton"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:contentDescription="@string/bgp_tabs"
+                android:src="@drawable/ic_tabs" />
+
+            <TextView
+                android:id="@+id/tab_count"
+                android:layout_width="wrap_content"
+                android:layout_height="16dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bgp_bg_pill_accent"
+                android:gravity="center"
+                android:minWidth="16dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:textColor="@color/bgp_text_primary"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                tools:text="3" />
+        </FrameLayout>
+
+        <ImageButton
+            android:id="@+id/btn_audio"
+            style="@style/BgpIconButton"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/bgp_background_play"
+            android:src="@drawable/ic_music_note" />
+
+        <ImageButton
+            android:id="@+id/btn_desktop"
+            style="@style/BgpIconButton"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/bgp_desktop_mode"
+            android:src="@drawable/ic_desktop" />
+    </LinearLayout>
+
+    <!-- ============ Mini player ============ -->
+    <LinearLayout
+        android:id="@+id/mini_player"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_above="@id/bottom_bar"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/bgp_bg_card"
+        android:elevation="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <FrameLayout
+            android:id="@+id/mini_art_holder"
+            android:layout_width="44dp"
+            android:layout_height="44dp">
+
+            <ImageView
+                android:id="@+id/mini_art"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="@drawable/bgp_bg_art_placeholder"
+                android:contentDescription="@string/bgp_now_playing"
+                android:scaleType="centerCrop" />
+
+            <ImageView
+                android:id="@+id/mini_art_fallback"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/bgp_now_playing"
+                android:src="@drawable/ic_music_note"
+                android:tint="@color/bgp_text_secondary" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/mini_title"
+                style="@style/BgpTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                tools:text="Song name" />
+
+            <TextView
+                android:id="@+id/mini_subtitle"
+                style="@style/BgpMeta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                tools:text="Artist · YouTube Music" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/mini_prev"
+            style="@style/BgpIconButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:contentDescription="@string/bgp_previous"
+            android:src="@drawable/ic_prev" />
+
+        <ImageButton
+            android:id="@+id/mini_play"
+            style="@style/BgpIconButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="@string/bgp_play"
+            android:src="@drawable/ic_pause" />
+
+        <ImageButton
+            android:id="@+id/mini_next"
+            style="@style/BgpIconButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:contentDescription="@string/bgp_next"
+            android:src="@drawable/ic_next" />
+
+        <ImageButton
+            android:id="@+id/mini_close"
+            style="@style/BgpIconButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:contentDescription="@string/bgp_stop_background_play"
+            android:padding="8dp"
+            android:src="@drawable/ic_close" />
+    </LinearLayout>
+
+    <!-- ============ Expanded player (bottom sheet) ============ -->
+    <LinearLayout
+        android:id="@+id/player_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bgp_surface"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="20dp"
+        android:visibility="gone"
+        tools:visibility="gone">
+
+        <ImageButton
+            android:id="@+id/player_collapse"
+            style="@style/BgpIconButton"
+            android:layout_width="44dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/bgp_close"
+            android:src="@drawable/ic_chevron_down" />
+
+        <ImageView
+            android:id="@+id/player_art"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            android:layout_weight="1"
+            android:background="@drawable/bgp_bg_art_placeholder"
+            android:contentDescription="@string/bgp_now_playing"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:id="@+id/player_title"
+            style="@style/BgpTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:textSize="20sp"
+            tools:text="Song name" />
+
+        <TextView
+            android:id="@+id/player_subtitle"
+            style="@style/BgpMeta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="14sp"
+            tools:text="Artist · Album" />
+
+        <TextView
+            android:id="@+id/player_site"
+            style="@style/BgpMeta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/bgp_text_tertiary"
+            android:textSize="12sp"
+            tools:text="YouTube Music · via" />
+
+        <SeekBar
+            android:id="@+id/player_seek"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_marginTop="10dp"
+            android:max="1000"
+            android:progressDrawable="@drawable/bgp_seek_progress"
+            android:thumb="@drawable/bgp_seek_thumb" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/player_position"
+                style="@style/BgpMeta"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:text="0:42" />
+
+            <TextView
+                android:id="@+id/player_duration"
+                style="@style/BgpMeta"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:layout_weight="1"
+                tools:text="3:55" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_marginTop="6dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/player_prev"
+                style="@style/BgpIconButton"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:contentDescription="@string/bgp_previous"
+                android:src="@drawable/ic_prev" />
+
+            <ImageButton
+                android:id="@+id/player_play"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginStart="18dp"
+                android:layout_marginEnd="18dp"
+                android:background="@drawable/bgp_bg_pill_accent"
+                android:contentDescription="@string/bgp_play"
+                android:padding="16dp"
+                android:src="@drawable/ic_pause" />
+
+            <ImageButton
+                android:id="@+id/player_next"
+                style="@style/BgpIconButton"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:contentDescription="@string/bgp_next"
+                android:src="@drawable/ic_next" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/player_state"
+                style="@style/BgpMeta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/bgp_text_tertiary"
+                tools:text="Playing · background play on" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

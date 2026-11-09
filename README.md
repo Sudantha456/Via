@@ -4,6 +4,22 @@
 
 English | [简体中文](./README_zh_CN.md) | [繁體中文](./README_zh_TW.md) | [Português](./README_pt_BR.md) | [Español](./README_es_ES.md) | [Türkçe](./README_tr_TR.md) | [日本語](./README_ja_JP.md) | [Русский](./README_ru_RU.md) | [العربية](./README_ar_AR.md)
 
+### Background play (this fork)
+
+This fork adds a full **background playback engine** to Via's browser shell:
+
+- audio and video keep playing with the screen off or the app in the background,
+  on **any** website — YouTube, YouTube Music, SoundCloud, Spotify Web, Bandcamp, …
+- a **rich media notification** with the video/music thumbnail, title, artist/owner,
+  album, site name, previous / play-pause / next and a seek bar
+- lock screen, headset, Bluetooth and Android Auto controls via `MediaSessionCompat`
+- in-app mini player and a full player sheet, multi-tab audio queue
+
+📖 **Setup, usage and troubleshooting (Sinhala + English): [docs/BACKGROUND_PLAY.md](./docs/BACKGROUND_PLAY.md)**
+
+⬇️ **APK**: every push builds automatically on GitHub Actions — grab it from the
+[Actions artifacts](../../actions) or the latest release.
+
 ### Introduction
 
 Via Browser is a powerful browser with following features:

@@ -10,3 +10,22 @@
 Thumbs.db
 ehthumbs.db
 ehthumbs_vista.db
+
+# Android / Gradle build output
+*.iml
+.gradle/
+/build/
+/app/build/
+/captures/
+.externalNativeBuild/
+.cxx/
+local.properties
+output.json
+*.apk
+*.aab
+*.ap_
+out/
+
+# IDE
+.idea/
+.vscode/

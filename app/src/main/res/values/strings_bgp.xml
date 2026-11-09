@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources tools:ignore="MissingTranslation" xmlns:tools="http://schemas.android.com/tools">
+    <!-- App -->
+    <string name="bgp_app_name">Via Background Play</string>
+
+    <!-- Settings -->
+    <string name="bgp_settings">Playback settings</string>
+    <string name="bgp_background_play">Background play</string>
+    <string name="bgp_background_play_summary">Keep audio and video playing with the screen off or the app in the background</string>
+    <string name="bgp_background_play_on">Background play is on</string>
+    <string name="bgp_background_play_off">Background play is off</string>
+    <string name="bgp_media_notification">Rich media notification</string>
+    <string name="bgp_media_notification_summary">Artwork, title, artist, site name, previous/next, play/pause and a seek bar in the notification, lock screen and Bluetooth controls</string>
+    <string name="bgp_mute_hidden">Mute hidden videos</string>
+    <string name="bgp_mute_hidden_summary">When a video tab is covered by another tab, keep only the audio stream alive. Saves battery and data.</string>
+    <string name="bgp_media_session">System media controls</string>
+    <string name="bgp_media_session_summary">Expose playback to the lock screen, headphones, Bluetooth, Android Auto and the media panel</string>
+    <string name="bgp_wake_lock">Keep awake while playing</string>
+    <string name="bgp_wake_lock_summary">Hold a wake lock while media is playing so the system does not freeze the page</string>
+    <string name="bgp_battery_optimization">Ignore battery optimisations</string>
+    <string name="bgp_battery_optimization_summary">Strongly recommended. Aggressive battery savers stop background playback after a few minutes.</string>
+    <string name="bgp_autoplay_next">Autoplay next on the same site</string>
+    <string name="bgp_autoplay_next_summary">Let the page move to the next track on its own when the current one ends</string>
+    <string name="bgp_notification_permission">Notification permission</string>
+    <string name="bgp_notification_permission_summary">Needed to show the media player notification</string>
+    <string name="bgp_notification_blocked">Notifications are blocked. Open system settings and allow them to see the media player.</string>
+    <string name="bgp_open_system_settings">Open system settings</string>
+
+    <!-- Playback -->
+    <string name="bgp_playing">Playing</string>
+    <string name="bgp_paused">Paused</string>
+    <string name="bgp_buffering">Buffering</string>
+    <string name="bgp_now_playing">Now playing</string>
+    <string name="bgp_audio_only">Audio only</string>
+    <string name="bgp_nothing_playing">Nothing is playing</string>
+    <string name="bgp_unknown_artist">Unknown artist</string>
+    <string name="bgp_site_unknown">Website</string>
+    <string name="bgp_previous">Previous</string>
+    <string name="bgp_next">Next</string>
+    <string name="bgp_play">Play</string>
+    <string name="bgp_pause">Pause</string>
+    <string name="bgp_stop">Stop</string>
+    <string name="bgp_close">Close</string>
+    <string name="bgp_stop_background_play">Stop background play</string>
+    <string name="bgp_start_background_play">Start background play</string>
+    <string name="bgp_background_channel_name">Media playback</string>
+    <string name="bgp_background_channel_description">Playback controls for media playing in Via</string>
+
+    <!-- Toolbar / pages -->
+    <string name="bgp_new_tab">New tab</string>
+    <string name="bgp_close_tab">Close tab</string>
+    <string name="bgp_reload">Reload</string>
+    <string name="bgp_back">Back</string>
+    <string name="bgp_forward">Forward</string>
+    <string name="bgp_home">Home</string>
+    <string name="bgp_search_hint">Search or type a URL</string>
+    <string name="bgp_add_tab">Add tab</string>
+    <string name="bgp_tabs">Tabs</string>
+    <string name="bgp_desktop_mode">Desktop site</string>
+    <string name="bgp_open_settings">Settings</string>
+    <string name="bgp_audio_badge">Audio</string>
+    <string name="bgp_swipe_hint">Swipe down on the player to collapse it</string>
+    <string name="bgp_page_error">This page could not be loaded</string>
+    <!-- Home -->
+    <string name="bgp_home_subtitle">Any website, in the background. YouTube and YouTube Music included — with full notification, lock screen and headset controls.</string>
+    <string name="bgp_quick_links">Quick links</string>
+    <string name="bgp_recent">Recent</string>
+    <string name="bgp_section_playback">Playback</string>
+    <string name="bgp_section_system">System permissions</string>
+    <string name="bgp_section_about">About</string>
+    <string name="bgp_home_background_on">Background play is on</string>
+    <string name="bgp_home_background_off">Background play is off</string>
+    <string name="bgp_home_background_summary_on">Audio and video keep playing when the screen is off or Via is in the background.</string>
+    <string name="bgp_home_background_summary_off">Turn this on to keep listening with the screen off.</string>
+    <string name="bgp_version_fmt">Version %1$s</string>
+    <string name="bgp_permission_granted">Granted</string>
+    <string name="bgp_permission_denied">Denied</string>
+    <string name="bgp_battery_ignored">Allowed</string>
+    <string name="bgp_battery_not_ignored">Restricted</string>
+
+    <!-- Menus -->
+    <string name="bgp_menu_toggle_background">Toggle background play</string>
+    <string name="bgp_menu_force_audio">Force audio-only mode for this site</string>
+    <string name="bgp_menu_open_player">Open player</string>
+    <string name="bgp_menu_desktop">Request desktop site</string>
+    <string name="bgp_menu_ua_android">Android user agent</string>
+    <string name="bgp_menu_share">Share page</string>
+    <string name="bgp_menu_reload_audio">Reload keeping audio</string>
+</resources>

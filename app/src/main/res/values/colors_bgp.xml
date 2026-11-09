@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bgp_surface">#FF12141A</color>
+    <color name="bgp_surface_raised">#FF1B1E26</color>
+    <color name="bgp_surface_pill">#FF242833</color>
+    <color name="bgp_divider">#FF2C313D</color>
+    <color name="bgp_accent">#FF6C8CFF</color>
+    <color name="bgp_accent_dim">#336C8CFF</color>
+    <color name="bgp_text_primary">#FFF2F4F8</color>
+    <color name="bgp_text_secondary">#FFABB2C0</color>
+    <color name="bgp_text_tertiary">#FF7A8394</color>
+    <color name="bgp_art_placeholder">#FF2B3242</color>
+    <color name="bgp_recording">#FFFF5D5D</color>
+    <color name="bgp_scrim">#CC000000</color>
+    <color name="bgp_transparent">#00000000</color>
+</resources>
