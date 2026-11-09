@@ -173,7 +173,7 @@ class BrowserTab(
         return false
     }
 
-    fun reload() = webView.reload()
+    override fun reload() = webView.reload()
 
     // ------------------------------------------------------------ TabHandle
 

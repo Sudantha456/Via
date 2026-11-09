@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         askForNotificationPermission()
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
         handleIntent(intent)
@@ -297,12 +297,12 @@ class MainActivity : AppCompatActivity() {
             this,
             object : android.view.GestureDetector.SimpleOnGestureListener() {
                 override fun onFling(
-                    e1: MotionEvent?,
-                    e2: MotionEvent?,
+                    e1: MotionEvent,
+                    e2: MotionEvent,
                     velocityX: Float,
                     velocityY: Float
                 ): Boolean {
-                    if (e1 != null && e2 != null && velocityY > 400) {
+                    if (velocityY > 400) {
                         closePlayer()
                         return true
                     }
@@ -488,7 +488,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun injectEngineInto(tab: BrowserTab) {
-        val script = PlaybackInjector.build(this, appHidden = !isResumed)
+        val script = PlaybackInjector.build(this, appHidden = !isActivityResumed())
         tab.webView.evaluateJavascript(script, null)
     }
 
@@ -786,9 +786,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun isActivityResumed(): Boolean =
+        lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED)
+
     private fun setBackgroundPlay(enabled: Boolean) {
         Prefs.setBackgroundPlay(this, enabled)
-        pushConfig(appHidden = !isResumed)
+        pushConfig(appHidden = !isActivityResumed())
         if (enabled) {
             BackgroundPlaybackService.sync(this)
         } else {
