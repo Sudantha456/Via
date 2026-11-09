@@ -97,11 +97,19 @@ jobs:
           token = os.environ.get("GITHUB_TOKEN", "")
           repo = os.environ.get("GITHUB_REPOSITORY", "")
           sha = os.environ.get("GITHUB_SHA", "")
+          import re
           try:
-              log = open("build.log", "r", errors="replace").read()
+              lines = open("build.log", "r", errors="replace").read().splitlines()
           except OSError:
-              log = "build.log missing (failure happened before the build step)"
-          body = log[-12000:]
+              lines = ["build.log missing (failure happened before the build step)"]
+          keep = []
+          interesting = re.compile(r"(error:|e: |warning: |FAILURE|What went wrong|Caused by|> Task .*FAILED|Execution failed|Unresolved|not found|Could not)", re.I)
+          for line in lines:
+              if interesting.search(line):
+                  keep.append(line.strip())
+          if not keep:
+              keep = lines[-60:]
+          body = "\n".join(keep[-250:])[-11000:]
           data = json.dumps({"body": "### Build log tail\n```\n" + body + "\n```"}).encode()
           req = urllib.request.Request(
               f"https://api.github.com/repos/{repo}/commits/{sha}/comments",
