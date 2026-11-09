@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shortcut_row"
+    android:layout_width="match_parent"
+    android:layout_height="52dp"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="12dp"
+    android:paddingEnd="8dp">
+
+    <ImageView
+        android:id="@+id/shortcut_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:alpha="0.85"
+        android:contentDescription="@string/bgp_new_tab"
+        android:src="@drawable/ic_language"
+        android:tint="@color/bgp_text_secondary" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/shortcut_title"
+            style="@style/Bgp.Text.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            tools:text="YouTube" />
+
+        <TextView
+            android:id="@+id/shortcut_subtitle"
+            style="@style/Bgp.Text.Meta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            tools:text="youtube.com" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/shortcut_badge"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/bgp_audio_badge"
+        android:src="@drawable/ic_headphones"
+        android:tint="@color/bgp_accent"
+        android:visibility="gone" />
+
+    <ImageButton
+        android:id="@+id/shortcut_more"
+        style="@style/Bgp.IconButton"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:contentDescription="@string/bgp_settings"
+        android:padding="8dp"
+        android:src="@drawable/ic_more_vert" />
+</LinearLayout>

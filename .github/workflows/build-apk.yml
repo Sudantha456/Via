@@ -1,0 +1,106 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ master, main, 'arena/**' ]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Variant to build'
+        required: true
+        default: 'release'
+        type: choice
+        options: [release, debug, both]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Assemble APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.7'
+
+      - name: Accept SDK licences
+        run: yes | sdkmanager --licenses > /dev/null || true
+
+      - name: Install platform + build tools
+        run: sdkmanager "platforms;android-34" "build-tools;34.0.0" > /dev/null
+
+      - name: Create debug keystore
+        run: |
+          mkdir -p "$HOME/.android"
+          if [ ! -f "$HOME/.android/debug.keystore" ]; then
+            keytool -genkeypair -v \
+              -keystore "$HOME/.android/debug.keystore" \
+              -storepass android -keypass android \
+              -alias androiddebugkey \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -dname "CN=Android Debug,O=Android,C=US"
+          fi
+
+      - name: Build
+        run: |
+          if [ "${{ github.event.inputs.build_type }}" = "debug" ]; then
+            ./gradlew --no-daemon assembleDebug
+          elif [ "${{ github.event.inputs.build_type }}" = "both" ]; then
+            ./gradlew --no-daemon assembleRelease assembleDebug
+          else
+            ./gradlew --no-daemon assembleRelease
+          fi
+
+      - name: Collect artifacts
+        run: |
+          mkdir -p out
+          find app/build/outputs/apk -name '*.apk' -exec cp {} out/ \;
+          ls -lh out
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: via-background-play-apk
+          path: out/*.apk
+          if-no-files-found: error
+
+      - name: Publish APK to a release
+        if: github.event_name != 'pull_request'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: Via Background Play build ${{ github.run_number }}
+          body: |
+            Automatic APK build from `${{ github.sha }}` (branch `${{ github.ref_name }}`).
+
+            ### What's inside
+            - Background playback for any website, YouTube and YouTube Music included
+            - Rich media notification: thumbnail, title, artist/owner, site name,
+              previous / play-pause / next and a seek bar
+            - Lock screen, headset and Bluetooth controls, plus a built-in mini player
+
+            Download the `.apk` below and install it on your phone (allow "install from
+            unknown sources"). The build is signed with the standard debug key, so it
+            installs directly.
+          files: out/*.apk
+          fail_on_unmatched_files: false

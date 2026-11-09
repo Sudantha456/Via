@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="bgp_gutter">12dp</dimen>
+    <dimen name="bgp_card_radius">22dp</dimen>
+    <dimen name="bgp_pill_radius">22dp</dimen>
+    <dimen name="bgp_toolbar_height">56dp</dimen>
+    <dimen name="bgp_art_size">56dp</dimen>
+    <dimen name="bgp_touch">44dp</dimen>
+    <dimen name="bgp_text_title">15sp</dimen>
+    <dimen name="bgp_text_meta">12sp</dimen>
+</resources>
